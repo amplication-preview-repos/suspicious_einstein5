@@ -1,0 +1,70 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model ClassModel {
+  attendances    Attendance[]
+  createdAt      DateTime     @default(now())
+  description    String?
+  gpsCoordinates String?
+  id             String       @id @default(cuid())
+  lecturer       Lecturer?    @relation(fields: [lecturerId], references: [id])
+  lecturerId     String?
+  title          String?
+  updatedAt      DateTime     @updatedAt
+}
+
+model Attendance {
+  classField   ClassModel? @relation(fields: [classFieldId], references: [id])
+  classFieldId String?
+  createdAt    DateTime    @default(now())
+  id           String      @id @default(cuid())
+  student      Student?    @relation(fields: [studentId], references: [id])
+  studentId    String?
+  timestamp    DateTime?
+  updatedAt    DateTime    @updatedAt
+  verified     Boolean?
+}
+
+model Student {
+  attendances    Attendance[]
+  createdAt      DateTime     @default(now())
+  email          String?
+  id             String       @id @default(cuid())
+  level          String?
+  name           String?
+  phoneNumber    String?
+  profilePhoto   Json?
+  programOfStudy String?
+  session        String?
+  studentId      String?
+  updatedAt      DateTime     @updatedAt
+}
+
+model Lecturer {
+  classes    ClassModel[]
+  course     String?
+  createdAt  DateTime     @default(now())
+  department String?
+  email      String?
+  id         String       @id @default(cuid())
+  name       String?
+  updatedAt  DateTime     @updatedAt
+}
+
+model User {
+  createdAt DateTime @default(now())
+  email     String?  @unique
+  firstName String?
+  id        String   @id @default(cuid())
+  lastName  String?
+  password  String
+  roles     Json
+  updatedAt DateTime @updatedAt
+  username  String   @unique
+}
